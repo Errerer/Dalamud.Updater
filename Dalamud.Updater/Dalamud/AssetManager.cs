@@ -32,7 +32,7 @@ namespace XIVLauncher.Common.Dalamud
             }
         }
 
-        public static async Task<DirectoryInfo> EnsureAssets(DirectoryInfo baseDir)
+        public static async Task<DirectoryInfo> EnsureAssets(DalamudUpdater updater, DirectoryInfo baseDir)
         {
             var clientHandler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
             using var client = new HttpClient(clientHandler)

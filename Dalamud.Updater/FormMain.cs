@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using XIVLauncher.Common.Dalamud;
 
@@ -68,6 +69,32 @@ namespace Dalamud.Updater
                 MessageBox.Show("有问题你发日志，别搁这瞎几把点了", windowsTitle);
             }
             dalamudUpdater.Run();
+            
+            // 启动一个定时器来监控更新状态
+            Task.Run(async () =>
+            {
+                await Task.Delay(500); // 等待更新开始
+                
+                while (dalamudUpdater.State == DalamudUpdater.DownloadState.Unknown)
+                {
+                    await Task.Delay(100);
+                }
+                
+                // 更新完成后更新UI
+                this.Invoke((Action)(() => 
+                {
+                    isCheckingUpdate = false;
+                    if (dalamudUpdater.State == DalamudUpdater.DownloadState.Done)
+                    {
+                        SetDalamudVersion();
+                        setStatus("更新成功");
+                    }
+                    else if (dalamudUpdater.State == DalamudUpdater.DownloadState.NoIntegrity)
+                    {
+                        setStatus("卫月与游戏不兼容");
+                    }
+                }));
+            });
         }
 
         private Version GetUpdaterVersion()
@@ -77,6 +104,13 @@ namespace Dalamud.Updater
 
         private string getVersion()
         {
+            // 优先使用从 GitHub 获取的版本信息
+            if (!string.IsNullOrEmpty(DalamudUpdater.Version))
+            {
+                return DalamudUpdater.Version;
+            }
+            
+            // 否则从本地目录查找
             var rgx = new Regex(@"^\d+\.\d+\.\d+\.\d+$");
             var stgRgx = new Regex(@"^\d+\.\d+\.\d+\.\d+-\d*-[\da-zA-Z]{9}$");
             var di = new DirectoryInfo(Path.Combine(addonDirectory.FullName, "Hooks"));
@@ -137,9 +171,8 @@ namespace Dalamud.Updater
                     this.DalamudUpdaterIcon.ShowBalloonTip(2000, "自启动成功", "放心，我会在后台偷偷干活的。", ToolTipIcon.Info);
                 }
             }
-            dalamudUpdater = new DalamudUpdater(addonDirectory, runtimeDirectory, assetDirectory, configDirectory);
+            dalamudUpdater = new DalamudUpdater(addonDirectory, runtimeDirectory, assetDirectory, configDirectory, null, null);
             dalamudUpdater.Overlay = dalamudLoadingOverlay;
-            dalamudUpdater.OnUpdateEvent += DalamudUpdater_OnUpdateEvent;
             InitializeConfig();
             labelVer.Text = $"v{Assembly.GetExecutingAssembly().GetName().Version}";
             UpdateFormConfig();
@@ -148,32 +181,6 @@ namespace Dalamud.Updater
             SetDalamudVersion();
 
             CheckUpdate();
-        }
-
-        private void DalamudUpdater_OnUpdateEvent(DalamudUpdater.DownloadState value)
-        {
-            this.isCheckingUpdate = false;
-            switch (value)
-            {
-                case DalamudUpdater.DownloadState.Failed:
-                    MessageBox.Show("更新Dalamud失败", windowsTitle, MessageBoxButtons.YesNo);
-                    setStatus("更新Dalamud失败");
-                    break;
-                case DalamudUpdater.DownloadState.Unknown:
-                    setStatus("未知错误");
-                    break;
-                case DalamudUpdater.DownloadState.NoIntegrity:
-                    setStatus("卫月与游戏不兼容");
-                    break;
-                case DalamudUpdater.DownloadState.Done:
-                    SetDalamudVersion();
-                    setStatus("更新成功");
-                    break;
-                case DalamudUpdater.DownloadState.Checking:
-                    setStatus("检查更新中...");
-                    isCheckingUpdate = true;
-                    break;
-            }
         }
 
         public void SetDalamudVersion()

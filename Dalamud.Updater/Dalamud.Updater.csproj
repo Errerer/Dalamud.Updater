@@ -45,6 +45,7 @@
     <PackageReference Include="System.Memory" Version="4.6.0" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.6.0" />
     <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework" />
@@ -103,11 +104,5 @@
   <ItemGroup>
     <Compile Remove="AssetManager.cs" />
     <Compile Remove="UnmanagedRunner.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Resources\48186_One-Last-Kiss2.mid" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\48186_One-Last-Kiss2.mid" />
   </ItemGroup>
 </Project>

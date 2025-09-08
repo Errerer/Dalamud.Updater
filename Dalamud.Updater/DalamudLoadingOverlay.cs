@@ -54,6 +54,10 @@ namespace Dalamud.Updater
                 case IDalamudLoadingOverlay.DalamudUpdateStep.Unavailable:
                     OnStatusLabel?.Invoke("暂时无法使用");
                     break;
+                    
+                case IDalamudLoadingOverlay.DalamudUpdateStep.Starting:
+                    OnStatusLabel?.Invoke("正在启动");
+                    break;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(progress), progress, null);
