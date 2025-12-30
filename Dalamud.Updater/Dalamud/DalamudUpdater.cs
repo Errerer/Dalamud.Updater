@@ -57,8 +57,10 @@ namespace XIVLauncher.Common.Dalamud
         
         private readonly TimeSpan defaultTimeout = TimeSpan.FromMinutes(1);
         private bool forceProxy;
-        
-        public const string RuntimeVersion = "9.0.2";
+
+        public bool UseSystemProxy { get; set; } = true;
+
+        public const string RuntimeVersion = "10.0.1";
         public static string OnlineHash { get; private set; } = string.Empty;
         public static string Version { get; private set; } = string.Empty;
 
@@ -145,13 +147,35 @@ namespace XIVLauncher.Common.Dalamud
 
         public async Task GetDalamudVersionInfoAsync()
         {
-            using var httpClient = new HttpClient();
+            // 设置 TLS 协议以支持 HTTPS 连接
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
+            // 创建 HttpClientHandler，根据配置决定是否使用系统代理
+            var handler = new HttpClientHandler
+            {
+                UseProxy = this.UseSystemProxy,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
+
+            if (this.UseSystemProxy)
+            {
+                handler.Proxy = WebRequest.GetSystemWebProxy();
+                handler.Proxy.Credentials = CredentialCache.DefaultCredentials;
+            }
+
+            using var httpClient = new HttpClient(handler);
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("XIVLauncherCN");
+            httpClient.Timeout = TimeSpan.FromSeconds(30);
 
             try
             {
+                var proxyMode = this.UseSystemProxy ? "使用系统代理" : "直连模式";
+                Log.Information("[DUPDATE] 正在从 GitHub API 获取版本信息（{ProxyMode}）...", proxyMode);
+
                 var response = await httpClient.GetAsync(
-                    "https://gh.atmoomen.top/https://raw.githubusercontent.com/Dalamud-DailyRoutines/ghapi-json-generator/output/v2/repos/AtmoOmen/Dalamud/releases/latest/data.json");
+                    "https://raw.githubusercontent.com/Dalamud-DailyRoutines/ghapi-json-generator/output/v2/repos/AtmoOmen/Dalamud/releases/latest/data.json");
+
+                Log.Information("[DUPDATE] 收到响应: StatusCode={0}", (int)response.StatusCode);
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadAsStringAsync();
@@ -161,7 +185,7 @@ namespace XIVLauncher.Common.Dalamud
                 if (string.IsNullOrWhiteSpace(version))
                     throw new NullReferenceException("[DUPDATE] 未能找到对应的版本信息");
                 Version = version!;
-                
+
                 var assets = jsonDoc.RootElement.GetProperty("assets");
                 foreach (var asset in assets.EnumerateArray())
                 {
@@ -172,7 +196,8 @@ namespace XIVLauncher.Common.Dalamud
 
                         var downloadPath = PlatformHelpers.GetTempFileName();
 
-                        using (var fileResponse = await httpClient.GetAsync($"https://gh.atmoomen.top/{downloadUrl}", 
+                        // 下载 hashes.json 也使用直连
+                        using (var fileResponse = await httpClient.GetAsync(downloadUrl,
                                                                             HttpCompletionOption.ResponseHeadersRead))
                         {
                             fileResponse.EnsureSuccessStatusCode();
@@ -182,7 +207,7 @@ namespace XIVLauncher.Common.Dalamud
 
                         var hash = ComputeFileHash(downloadPath);
                         File.Delete(downloadPath);
-                        
+
                         Log.Information($"[DUPDATE] 获取到远端 Dalamud 哈希: {hash}");
                         OnlineHash = hash;
                         return;
@@ -191,9 +216,26 @@ namespace XIVLauncher.Common.Dalamud
 
                 throw new NullReferenceException("[DUPDATE] 未能找到对应的 hashes.json 文件");
             }
-            catch (HttpRequestException e) { throw new Exception("访问 Github API 时发生错误: " + e.Message); }
-            catch (TaskCanceledException) { throw new Exception("下载超时"); }
-            catch (OperationCanceledException) { throw new Exception("下载取消"); }
+            catch (HttpRequestException e)
+            {
+                var errorMsg = $"访问 Github API 时发生错误: {e.Message}";
+                if (e.InnerException != null)
+                {
+                    errorMsg += $" | 内部错误: {e.InnerException.Message}";
+                }
+                Log.Error(errorMsg);
+                throw new Exception(errorMsg);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Error("[DUPDATE] 下载超时");
+                throw new Exception("下载超时");
+            }
+            catch (OperationCanceledException)
+            {
+                Log.Error("[DUPDATE] 下载取消");
+                throw new Exception("下载取消");
+            }
         }
 
         private async Task UpdateDalamud()
@@ -231,12 +273,8 @@ namespace XIVLauncher.Common.Dalamud
         {
             Log.Verbose("[DUPDATE] 开始检查版本信息");
 
-            if (!string.IsNullOrWhiteSpace(OnlineHash) && !string.IsNullOrWhiteSpace(Version))
-            {
-                Log.Verbose("[DUPDATE] 版本信息已存在: {Version} ({Hash})", Version, OnlineHash);
-                return;
-            }
-
+            // 始终从 GitHub 获取最新版本信息，不使用缓存
+            // 这样可以确保每次更新检查都能获取到最新版本
             Log.Information("[DUPDATE] 正在从 Github 获取最新版本信息");
             await GetDalamudVersionInfoAsync();
             Log.Information("[DUPDATE] 获取到版本: {Version} ({Hash})", Version, OnlineHash);
@@ -478,18 +516,34 @@ namespace XIVLauncher.Common.Dalamud
 
         private async Task DownloadDalamud(DirectoryInfo addonPath)
         {
-            const string REPO_API = "https://api.github.com/repos/AtmoOmen/Dalamud/releases/latest";
+            // 直连 GitHub API，根据配置决定是否使用系统代理
+            const string REPO_API = "https://raw.githubusercontent.com/Dalamud-DailyRoutines/ghapi-json-generator/output/v2/repos/AtmoOmen/Dalamud/releases/latest/data.json";
 
             if (addonPath.Exists) addonPath.Delete(true);
             addonPath.Create();
 
-            using var httpClient = new HttpClient();
+            // 创建 HttpClientHandler，根据配置决定是否使用系统代理
+            var handler = new HttpClientHandler
+            {
+                UseProxy = this.UseSystemProxy,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
+
+            if (this.UseSystemProxy)
+            {
+                handler.Proxy = WebRequest.GetSystemWebProxy();
+                handler.Proxy.Credentials = CredentialCache.DefaultCredentials;
+            }
+
+            using var httpClient = new HttpClient(handler);
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("XIVLauncherCN");
-            if (!string.IsNullOrWhiteSpace(this.githubToken)) 
+            if (!string.IsNullOrWhiteSpace(this.githubToken))
                 httpClient.DefaultRequestHeaders.Authorization = new("Bearer", this.githubToken);
 
             try
             {
+                var proxyMode = this.UseSystemProxy ? "使用系统代理" : "直连模式";
+                Log.Information("[DUPDATE] 正在下载 Dalamud 包（{ProxyMode}）...", proxyMode);
                 var response = await httpClient.GetAsync(REPO_API);
                 response.EnsureSuccessStatusCode();
 
@@ -498,20 +552,21 @@ namespace XIVLauncher.Common.Dalamud
                 var assets = jsonDoc.RootElement.GetProperty("assets");
 
                 var downloadPath = PlatformHelpers.GetTempFileName();
-                
+
                 foreach (var asset in assets.EnumerateArray())
                 {
                     var fileName = asset.GetProperty("name").GetString()!;
                     var downloadUrl = asset.GetProperty("browser_download_url").GetString()!;
 
                     if (fileName != "latest.7z") continue;
-                    
-                    await this.DownloadFile($"https://gh.atmoomen.top/{downloadUrl}", downloadPath, this.defaultTimeout).ConfigureAwait(false);
+
+                    // 直接使用原始下载 URL，不添加代理前缀
+                    await this.DownloadFile(downloadUrl, downloadPath, this.defaultTimeout).ConfigureAwait(false);
                     PlatformHelpers.Un7za(downloadPath, addonPath.FullName);
                     File.Delete(downloadPath);
                     break;
                 }
-                
+
                 try
                 {
                     var devPath = new DirectoryInfo(Path.Combine(addonPath.FullName, "..", "dev"));

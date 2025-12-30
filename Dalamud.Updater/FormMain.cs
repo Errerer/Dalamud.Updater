@@ -68,30 +68,41 @@ namespace Dalamud.Updater
             {
                 MessageBox.Show("有问题你发日志，别搁这瞎几把点了", windowsTitle);
             }
+
+            // 显示开始检查更新
+            setStatus("正在检查更新...");
+            setProgressBar(0);
+            setVisible(true);
+
             dalamudUpdater.Run();
-            
+
             // 启动一个定时器来监控更新状态
             Task.Run(async () =>
             {
                 await Task.Delay(500); // 等待更新开始
-                
+
                 while (dalamudUpdater.State == DalamudUpdater.DownloadState.Unknown)
                 {
                     await Task.Delay(100);
                 }
-                
+
                 // 更新完成后更新UI
-                this.Invoke((Action)(() => 
+                this.Invoke((Action)(() =>
                 {
                     isCheckingUpdate = false;
                     if (dalamudUpdater.State == DalamudUpdater.DownloadState.Done)
                     {
                         SetDalamudVersion();
-                        setStatus("更新成功");
+                        // 显示详细的更新信息
+                        var version = DalamudUpdater.Version;
+                        var runtimeVer = DalamudUpdater.RuntimeVersion;
+                        setStatus($"更新成功 - Dalamud: {version} | Runtime: {runtimeVer}");
+                        setProgressBar(100);
                     }
                     else if (dalamudUpdater.State == DalamudUpdater.DownloadState.NoIntegrity)
                     {
                         setStatus("卫月与游戏不兼容");
+                        setProgressBar(0);
                     }
                 }));
             });
@@ -144,6 +155,8 @@ namespace Dalamud.Updater
         {
             InitLogging();
             InitializeComponent();
+            // 重新配置 Serilog 以添加 TextBox sink
+            ReconfigureLogging();
             InitializePIDCheck();
             InitializeDeleteShit();
             dalamudLoadingOverlay = new DalamudLoadingOverlay(this);
@@ -174,13 +187,14 @@ namespace Dalamud.Updater
             dalamudUpdater = new DalamudUpdater(addonDirectory, runtimeDirectory, assetDirectory, configDirectory, null, null);
             dalamudUpdater.Overlay = dalamudLoadingOverlay;
             InitializeConfig();
+            dalamudUpdater.UseSystemProxy = this.config.UseProxy ?? true;
             labelVer.Text = $"v{Assembly.GetExecutingAssembly().GetName().Version}";
             UpdateFormConfig();
             UpdateSelf();
 
             SetDalamudVersion();
 
-            CheckUpdate();
+            // CheckUpdate(); // 启动时不自动检查更新
         }
 
         public void SetDalamudVersion()
@@ -218,6 +232,30 @@ namespace Dalamud.Updater
                 .MinimumLevel.ControlledBy(levelSwitch)
                 .CreateLogger();
         }
+
+        private void ReconfigureLogging()
+        {
+            var baseDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var logPath = Path.Combine(baseDirectory, "Dalamud.Updater.log");
+
+            var levelSwitch = new LoggingLevelSwitch();
+
+#if DEBUG
+            levelSwitch.MinimumLevel = LogEventLevel.Verbose;
+#else
+            levelSwitch.MinimumLevel = LogEventLevel.Information;
+#endif
+
+            // 重新配置 Serilog，添加 TextBox sink
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Async(a => a.File(logPath))
+                .WriteTo.TextBox(this.textBoxDebugLog, LogEventLevel.Verbose)
+                .MinimumLevel.ControlledBy(levelSwitch)
+                .CreateLogger();
+
+            Log.Information("调试日志界面已初始化");
+        }
+
         private void InitializeConfig()
         {
             this.config = Config.Load(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "DalamudUpdaterConfig.json"));
@@ -342,6 +380,7 @@ namespace Dalamud.Updater
             this.checkBoxAutoStart.Checked = this.config.AutoStart.Value;
             this.delayBox.Value = (decimal)this.config.InjectDelaySeconds;
             this.checkBoxSafeMode.Checked = this.config.SafeMode.Value;
+            this.checkBoxUseProxy.Checked = this.config.UseProxy ?? true;
         }
 
         private void UpdateSelf()
@@ -485,25 +524,26 @@ namespace Dalamud.Updater
 
         private void ButtonCheckForUpdate_Click(object sender, EventArgs e)
         {
-            if (this.comboBoxFFXIV.SelectedItem != null)
-            {
-                var pid = int.Parse((string)this.comboBoxFFXIV.SelectedItem);
-                var process = Process.GetProcessById(pid);
-                if (isInjected(process))
-                {
-                    var choice = MessageBox.Show("经检测存在 ffxiv_dx11.exe 进程，更新卫月需要关闭游戏，需要帮您代劳吗？", "关闭游戏",
-                                    MessageBoxButtons.YesNo,
-                                    MessageBoxIcon.Information);
-                    if (choice == DialogResult.Yes)
-                    {
-                        process.Kill();
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-            }
+            // 直接检查更新，不检测 FFXIV 进程
+            // if (this.comboBoxFFXIV.SelectedItem != null)
+            // {
+            //     var pid = int.Parse((string)this.comboBoxFFXIV.SelectedItem);
+            //     var process = Process.GetProcessById(pid);
+            //     if (isInjected(process))
+            //     {
+            //         var choice = MessageBox.Show("经检测存在 ffxiv_dx11.exe 进程，更新卫月需要关闭游戏，需要帮您代劳吗？", "关闭游戏",
+            //                         MessageBoxButtons.YesNo,
+            //                         MessageBoxIcon.Information);
+            //         if (choice == DialogResult.Yes)
+            //         {
+            //             process.Kill();
+            //         }
+            //         else
+            //         {
+            //             return;
+            //         }
+            //     }
+            // }
             CheckUpdate();
         }
 
@@ -753,6 +793,33 @@ namespace Dalamud.Updater
             }
 
         }
+
+        private void CheckBoxShowDebug_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxShowDebug.Checked)
+            {
+                // 显示调试日志窗口并扩大窗口大小
+                textBoxDebugLog.Visible = true;
+                this.MinimumSize = new System.Drawing.Size(300, 740);
+                this.ClientSize = new System.Drawing.Size(300, 740);
+            }
+            else
+            {
+                // 隐藏调试日志窗口并还原窗口大小
+                textBoxDebugLog.Visible = false;
+                this.MinimumSize = new System.Drawing.Size(300, 540);
+                this.ClientSize = new System.Drawing.Size(300, 540);
+            }
+        }
+
+        private void CheckBoxUseProxy_CheckedChanged(object sender, EventArgs e)
+        {
+            this.config.UseProxy = checkBoxUseProxy.Checked;
+            this.dalamudUpdater.UseSystemProxy = this.config.UseProxy.Value;
+            this.config.Save();
+            Log.Information("[CONFIG] 系统代理设置已更改为: {UseProxy}", this.config.UseProxy);
+        }
+
         private void SetAutoRun(bool value)
         {
             string strFilePath = Application.ExecutablePath;

@@ -16,7 +16,8 @@ namespace Dalamud.Updater
         public bool? AutoInject { get; set; } = null;
         public bool? AutoStart { get; set; } = null;
         public double? InjectDelaySeconds { get; set; } = null;
-        public bool? SafeMode { get; set; } = null; 
+        public bool? SafeMode { get; set; } = null;
+        public bool? UseProxy { get; set; } = null; 
 
         private static readonly JsonSerializerSettings SerializerSettings = new()
         {
@@ -48,11 +49,12 @@ namespace Dalamud.Updater
             {
                 Log.Error(ex, "Failed to load Config at {0}", path);
             }
-            deserialized ??= new Config() { 
+            deserialized ??= new Config() {
                 AutoInject = false,
                 AutoStart = false,
                 InjectDelaySeconds = 0,
                 SafeMode = false,
+                UseProxy = true,
             };
             //Log.Information(JsonConvert.SerializeObject(deserialized), SerializerSettings);
             deserialized.configPath = path;

@@ -34,7 +34,19 @@ namespace XIVLauncher.Common.Dalamud
 
         public static async Task<DirectoryInfo> EnsureAssets(DalamudUpdater updater, DirectoryInfo baseDir)
         {
-            var clientHandler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
+            // 创建 HttpClientHandler，根据配置决定是否使用系统代理
+            var clientHandler = new HttpClientHandler()
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                UseProxy = updater.UseSystemProxy
+            };
+
+            if (updater.UseSystemProxy)
+            {
+                clientHandler.Proxy = WebRequest.GetSystemWebProxy();
+                clientHandler.Proxy.Credentials = CredentialCache.DefaultCredentials;
+            }
+
             using var client = new HttpClient(clientHandler)
             {
                 Timeout = TimeSpan.FromMinutes(4),

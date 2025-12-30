@@ -35,72 +35,64 @@ namespace Dalamud.Updater
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.buttonInject = new System.Windows.Forms.Button();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.checkBoxAutoInject = new System.Windows.Forms.CheckBox();
             this.DalamudUpdaterIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.显示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.退出ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkBoxAutoStart = new System.Windows.Forms.CheckBox();
-            this.labelVer = new System.Windows.Forms.Label();
-            this.delayLabel = new System.Windows.Forms.Label();
-            this.second = new System.Windows.Forms.Label();
-            this.delayBox = new System.Windows.Forms.NumericUpDown();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.label1 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.checkBoxSafeMode = new System.Windows.Forms.CheckBox();
             this.checkboxTableLayout = new System.Windows.Forms.TableLayoutPanel();
-            this.delayFlowLayout = new System.Windows.Forms.FlowLayoutPanel();
-            this.versionTableLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.checkBoxShowDebug = new System.Windows.Forms.CheckBox();
+            this.checkBoxUseProxy = new System.Windows.Forms.CheckBox();
             this.mainTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.labelVersion = new System.Windows.Forms.Label();
             this.buttonCheckForUpdate = new System.Windows.Forms.Button();
             this.comboBoxFFXIV = new System.Windows.Forms.ComboBox();
+            this.textBoxDebugLog = new System.Windows.Forms.TextBox();
+            this.delayFlowLayout = new System.Windows.Forms.FlowLayoutPanel();
+            this.second = new System.Windows.Forms.Label();
+            this.delayBox = new System.Windows.Forms.NumericUpDown();
+            this.delayLabel = new System.Windows.Forms.Label();
             this.delayTableLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.labelVer = new System.Windows.Forms.Label();
+            this.versionTableLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.label1 = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.delayBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.checkboxTableLayout.SuspendLayout();
-            this.delayFlowLayout.SuspendLayout();
-            this.versionTableLayout.SuspendLayout();
             this.mainTableLayout.SuspendLayout();
+            this.delayFlowLayout.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.delayBox)).BeginInit();
             this.delayTableLayout.SuspendLayout();
+            this.versionTableLayout.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonInject
             // 
             this.buttonInject.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonInject.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonInject.Location = new System.Drawing.Point(5, 354);
+            this.buttonInject.Location = new System.Drawing.Point(5, 357);
             this.buttonInject.Margin = new System.Windows.Forms.Padding(5);
             this.buttonInject.Name = "buttonInject";
-            this.buttonInject.Size = new System.Drawing.Size(274, 81);
+            this.buttonInject.Size = new System.Drawing.Size(258, 77);
             this.buttonInject.TabIndex = 0;
             this.buttonInject.Text = "注入灵魂";
             this.buttonInject.UseVisualStyleBackColor = true;
             this.buttonInject.Click += new System.EventHandler(this.ButtonInject_Click);
             // 
-            // linkLabel1
-            // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(198, 0);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(77, 15);
-            this.linkLabel1.TabIndex = 3;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "加入QQ频道";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            // 
             // checkBoxAutoInject
             // 
             this.checkBoxAutoInject.AutoSize = true;
             this.checkBoxAutoInject.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkBoxAutoInject.Location = new System.Drawing.Point(140, 3);
+            this.checkBoxAutoInject.Location = new System.Drawing.Point(132, 3);
             this.checkBoxAutoInject.Name = "checkBoxAutoInject";
-            this.checkBoxAutoInject.Size = new System.Drawing.Size(131, 44);
+            this.checkBoxAutoInject.Size = new System.Drawing.Size(123, 44);
             this.checkBoxAutoInject.TabIndex = 4;
             this.checkBoxAutoInject.Text = "自动注入";
             this.checkBoxAutoInject.UseVisualStyleBackColor = true;
@@ -146,48 +138,11 @@ namespace Dalamud.Updater
             this.checkBoxAutoStart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.checkBoxAutoStart.Location = new System.Drawing.Point(3, 3);
             this.checkBoxAutoStart.Name = "checkBoxAutoStart";
-            this.checkBoxAutoStart.Size = new System.Drawing.Size(131, 44);
+            this.checkBoxAutoStart.Size = new System.Drawing.Size(123, 44);
             this.checkBoxAutoStart.TabIndex = 5;
             this.checkBoxAutoStart.Text = "开机启动";
             this.checkBoxAutoStart.UseVisualStyleBackColor = true;
             this.checkBoxAutoStart.CheckedChanged += new System.EventHandler(this.checkBoxAutoStart_CheckedChanged);
-            // 
-            // labelVer
-            // 
-            this.labelVer.AutoSize = true;
-            this.labelVer.Location = new System.Drawing.Point(3, 0);
-            this.labelVer.Name = "labelVer";
-            this.labelVer.Size = new System.Drawing.Size(44, 15);
-            this.labelVer.TabIndex = 8;
-            this.labelVer.Text = "default";
-            // 
-            // delayLabel
-            // 
-            this.delayLabel.AutoSize = true;
-            this.delayLabel.Location = new System.Drawing.Point(0, 6);
-            this.delayLabel.Margin = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.delayLabel.Name = "delayLabel";
-            this.delayLabel.Size = new System.Drawing.Size(59, 15);
-            this.delayLabel.TabIndex = 10;
-            this.delayLabel.Text = "延迟注入";
-            // 
-            // second
-            // 
-            this.second.AutoSize = true;
-            this.second.Location = new System.Drawing.Point(169, 6);
-            this.second.Margin = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.second.Name = "second";
-            this.second.Size = new System.Drawing.Size(20, 15);
-            this.second.TabIndex = 11;
-            this.second.Text = "秒";
-            // 
-            // delayBox
-            // 
-            this.delayBox.Location = new System.Drawing.Point(62, 3);
-            this.delayBox.Name = "delayBox";
-            this.delayBox.Size = new System.Drawing.Size(104, 23);
-            this.delayBox.TabIndex = 12;
-            this.delayBox.ValueChanged += new System.EventHandler(this.delayBox_ValueChanged);
             // 
             // statusStrip1
             // 
@@ -195,9 +150,9 @@ namespace Dalamud.Updater
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar1,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(8, 506);
+            this.statusStrip1.Location = new System.Drawing.Point(8, 563);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(284, 26);
+            this.statusStrip1.Size = new System.Drawing.Size(268, 26);
             this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 13;
             this.statusStrip1.Text = "statusStrip1";
@@ -214,27 +169,13 @@ namespace Dalamud.Updater
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 21);
             this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Crimson;
-            this.label1.Location = new System.Drawing.Point(3, 56);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(268, 44);
-            this.label1.TabIndex = 14;
-            this.label1.Text = "自动注入黑屏请先尝试增加延迟！！";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.toolTip1.SetToolTip(this.label1, "别问了别问了");
-            // 
             // checkBoxSafeMode
             // 
             this.checkBoxSafeMode.AutoSize = true;
             this.checkBoxSafeMode.Dock = System.Windows.Forms.DockStyle.Fill;
             this.checkBoxSafeMode.Location = new System.Drawing.Point(3, 53);
             this.checkBoxSafeMode.Name = "checkBoxSafeMode";
-            this.checkBoxSafeMode.Size = new System.Drawing.Size(131, 44);
+            this.checkBoxSafeMode.Size = new System.Drawing.Size(123, 44);
             this.checkBoxSafeMode.TabIndex = 15;
             this.checkBoxSafeMode.Text = "禁用所有插件";
             this.toolTip1.SetToolTip(this.checkBoxSafeMode, "禁用所有插件，以避免爆炸");
@@ -242,56 +183,65 @@ namespace Dalamud.Updater
             this.checkBoxSafeMode.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // checkboxTableLayout
-            // 
+            //
             this.checkboxTableLayout.ColumnCount = 2;
             this.checkboxTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.checkboxTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.checkboxTableLayout.Controls.Add(this.checkBoxAutoStart, 0, 0);
             this.checkboxTableLayout.Controls.Add(this.checkBoxAutoInject, 1, 0);
             this.checkboxTableLayout.Controls.Add(this.checkBoxSafeMode, 0, 1);
+            this.checkboxTableLayout.Controls.Add(this.checkBoxShowDebug, 1, 1);
+            this.checkboxTableLayout.Controls.Add(this.checkBoxUseProxy, 0, 2);
             this.checkboxTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkboxTableLayout.Location = new System.Drawing.Point(5, 134);
+            this.checkboxTableLayout.Location = new System.Drawing.Point(5, 137);
             this.checkboxTableLayout.Margin = new System.Windows.Forms.Padding(5);
             this.checkboxTableLayout.Name = "checkboxTableLayout";
-            this.checkboxTableLayout.RowCount = 2;
-            this.checkboxTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 36F));
-            this.checkboxTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 36F));
-            this.checkboxTableLayout.Size = new System.Drawing.Size(274, 100);
+            this.checkboxTableLayout.RowCount = 3;
+            this.checkboxTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
+            this.checkboxTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
+            this.checkboxTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.34F));
+            this.checkboxTableLayout.Size = new System.Drawing.Size(258, 150);
             this.checkboxTableLayout.TabIndex = 16;
             // 
-            // delayFlowLayout
-            // 
-            this.delayFlowLayout.Controls.Add(this.delayLabel);
-            this.delayFlowLayout.Controls.Add(this.delayBox);
-            this.delayFlowLayout.Controls.Add(this.second);
-            this.delayFlowLayout.Dock = System.Windows.Forms.DockStyle.Top;
-            this.delayFlowLayout.Location = new System.Drawing.Point(3, 3);
-            this.delayFlowLayout.Name = "delayFlowLayout";
-            this.delayFlowLayout.Size = new System.Drawing.Size(268, 50);
-            this.delayFlowLayout.TabIndex = 17;
-            // 
-            // versionTableLayout
-            // 
-            this.versionTableLayout.ColumnCount = 2;
-            this.versionTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.versionTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.versionTableLayout.Controls.Add(this.labelVer, 0, 0);
-            this.versionTableLayout.Controls.Add(this.linkLabel1, 1, 0);
-            this.versionTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.versionTableLayout.Location = new System.Drawing.Point(3, 443);
-            this.versionTableLayout.Name = "versionTableLayout";
-            this.versionTableLayout.RowCount = 1;
-            this.versionTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.versionTableLayout.Size = new System.Drawing.Size(278, 52);
-            this.versionTableLayout.TabIndex = 18;
-            // 
+            // checkBoxShowDebug
+            //
+            this.checkBoxShowDebug.AutoSize = true;
+            this.checkBoxShowDebug.Checked = true;
+            this.checkBoxShowDebug.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxShowDebug.Dock = System.Windows.Forms.DockStyle.Left;
+            this.checkBoxShowDebug.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxShowDebug.Location = new System.Drawing.Point(132, 53);
+            this.checkBoxShowDebug.Name = "checkBoxShowDebug";
+            this.checkBoxShowDebug.Size = new System.Drawing.Size(104, 44);
+            this.checkBoxShowDebug.TabIndex = 7;
+            this.checkBoxShowDebug.Text = "显示调试日志";
+            this.checkBoxShowDebug.UseVisualStyleBackColor = true;
+            this.checkBoxShowDebug.CheckedChanged += new System.EventHandler(this.CheckBoxShowDebug_CheckedChanged);
+            //
+            // checkBoxUseProxy
+            //
+            this.checkBoxUseProxy.AutoSize = true;
+            this.checkBoxUseProxy.Checked = true;
+            this.checkBoxUseProxy.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxUseProxy.Dock = System.Windows.Forms.DockStyle.Left;
+            this.checkBoxUseProxy.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxUseProxy.Location = new System.Drawing.Point(3, 103);
+            this.checkBoxUseProxy.Name = "checkBoxUseProxy";
+            this.checkBoxUseProxy.Size = new System.Drawing.Size(104, 44);
+            this.checkBoxUseProxy.TabIndex = 8;
+            this.checkBoxUseProxy.Text = "使用系统代理";
+            this.toolTip1.SetToolTip(this.checkBoxUseProxy, "使用系统代理访问 GitHub（需要重新检查更新）");
+            this.checkBoxUseProxy.UseVisualStyleBackColor = true;
+            this.checkBoxUseProxy.CheckedChanged += new System.EventHandler(this.CheckBoxUseProxy_CheckedChanged);
+            //
             // mainTableLayout
             // 
             this.mainTableLayout.ColumnCount = 1;
             this.mainTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.mainTableLayout.Controls.Add(this.textBoxDebugLog, 0, 6);
             this.mainTableLayout.Controls.Add(this.labelVersion, 0, 0);
             this.mainTableLayout.Controls.Add(this.buttonCheckForUpdate, 0, 1);
-            this.mainTableLayout.Controls.Add(this.versionTableLayout, 0, 6);
+            this.mainTableLayout.Controls.Add(this.versionTableLayout, 0, 7);
             this.mainTableLayout.Controls.Add(this.comboBoxFFXIV, 0, 2);
             this.mainTableLayout.Controls.Add(this.checkboxTableLayout, 0, 3);
             this.mainTableLayout.Controls.Add(this.buttonInject, 0, 5);
@@ -299,16 +249,16 @@ namespace Dalamud.Updater
             this.mainTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainTableLayout.Location = new System.Drawing.Point(8, 8);
             this.mainTableLayout.Name = "mainTableLayout";
-            this.mainTableLayout.RowCount = 7;
+            this.mainTableLayout.RowCount = 8;
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60F));
+            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.mainTableLayout.Size = new System.Drawing.Size(284, 498);
+            this.mainTableLayout.Size = new System.Drawing.Size(268, 555);
             this.mainTableLayout.TabIndex = 19;
             // 
             // labelVersion
@@ -329,7 +279,7 @@ namespace Dalamud.Updater
             this.buttonCheckForUpdate.Location = new System.Drawing.Point(5, 30);
             this.buttonCheckForUpdate.Margin = new System.Windows.Forms.Padding(5);
             this.buttonCheckForUpdate.Name = "buttonCheckForUpdate";
-            this.buttonCheckForUpdate.Size = new System.Drawing.Size(274, 64);
+            this.buttonCheckForUpdate.Size = new System.Drawing.Size(258, 64);
             this.buttonCheckForUpdate.TabIndex = 0;
             this.buttonCheckForUpdate.Text = "检查更新";
             this.buttonCheckForUpdate.UseVisualStyleBackColor = true;
@@ -345,9 +295,65 @@ namespace Dalamud.Updater
             this.comboBoxFFXIV.Location = new System.Drawing.Point(5, 104);
             this.comboBoxFFXIV.Margin = new System.Windows.Forms.Padding(5);
             this.comboBoxFFXIV.Name = "comboBoxFFXIV";
-            this.comboBoxFFXIV.Size = new System.Drawing.Size(274, 23);
+            this.comboBoxFFXIV.Size = new System.Drawing.Size(258, 23);
             this.comboBoxFFXIV.TabIndex = 2;
             this.comboBoxFFXIV.Click += new System.EventHandler(this.comboBoxFFXIV_Clicked);
+            // 
+            // textBoxDebugLog
+            //
+            this.textBoxDebugLog.BackColor = System.Drawing.Color.Black;
+            this.textBoxDebugLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxDebugLog.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxDebugLog.ForeColor = System.Drawing.Color.LightGreen;
+            this.textBoxDebugLog.Location = new System.Drawing.Point(5, 444);
+            this.textBoxDebugLog.Margin = new System.Windows.Forms.Padding(5);
+            this.textBoxDebugLog.Multiline = true;
+            this.textBoxDebugLog.Name = "textBoxDebugLog";
+            this.textBoxDebugLog.ReadOnly = true;
+            this.textBoxDebugLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBoxDebugLog.Size = new System.Drawing.Size(258, 48);
+            this.textBoxDebugLog.TabIndex = 20;
+            this.textBoxDebugLog.Visible = true;
+            this.textBoxDebugLog.WordWrap = false;
+            // 
+            // delayFlowLayout
+            // 
+            this.delayFlowLayout.Controls.Add(this.delayLabel);
+            this.delayFlowLayout.Controls.Add(this.delayBox);
+            this.delayFlowLayout.Controls.Add(this.second);
+            this.delayFlowLayout.Dock = System.Windows.Forms.DockStyle.Top;
+            this.delayFlowLayout.Location = new System.Drawing.Point(3, 3);
+            this.delayFlowLayout.Name = "delayFlowLayout";
+            this.delayFlowLayout.Size = new System.Drawing.Size(252, 50);
+            this.delayFlowLayout.TabIndex = 17;
+            // 
+            // second
+            // 
+            this.second.AutoSize = true;
+            this.second.Location = new System.Drawing.Point(169, 6);
+            this.second.Margin = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.second.Name = "second";
+            this.second.Size = new System.Drawing.Size(20, 15);
+            this.second.TabIndex = 11;
+            this.second.Text = "秒";
+            // 
+            // delayBox
+            // 
+            this.delayBox.Location = new System.Drawing.Point(62, 3);
+            this.delayBox.Name = "delayBox";
+            this.delayBox.Size = new System.Drawing.Size(104, 23);
+            this.delayBox.TabIndex = 12;
+            this.delayBox.ValueChanged += new System.EventHandler(this.delayBox_ValueChanged);
+            // 
+            // delayLabel
+            // 
+            this.delayLabel.AutoSize = true;
+            this.delayLabel.Location = new System.Drawing.Point(0, 6);
+            this.delayLabel.Margin = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.delayLabel.Name = "delayLabel";
+            this.delayLabel.Size = new System.Drawing.Size(59, 15);
+            this.delayLabel.TabIndex = 10;
+            this.delayLabel.Text = "延迟注入";
             // 
             // delayTableLayout
             // 
@@ -356,20 +362,70 @@ namespace Dalamud.Updater
             this.delayTableLayout.Controls.Add(this.label1, 0, 1);
             this.delayTableLayout.Controls.Add(this.delayFlowLayout, 0, 0);
             this.delayTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.delayTableLayout.Location = new System.Drawing.Point(5, 244);
+            this.delayTableLayout.Location = new System.Drawing.Point(5, 247);
             this.delayTableLayout.Margin = new System.Windows.Forms.Padding(5);
             this.delayTableLayout.Name = "delayTableLayout";
             this.delayTableLayout.RowCount = 2;
             this.delayTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.delayTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.delayTableLayout.Size = new System.Drawing.Size(274, 100);
+            this.delayTableLayout.Size = new System.Drawing.Size(258, 100);
             this.delayTableLayout.TabIndex = 19;
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(182, 0);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(77, 15);
+            this.linkLabel1.TabIndex = 3;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "加入QQ频道";
+            this.linkLabel1.Visible = false;
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
+            // labelVer
+            // 
+            this.labelVer.AutoSize = true;
+            this.labelVer.Location = new System.Drawing.Point(3, 0);
+            this.labelVer.Name = "labelVer";
+            this.labelVer.Size = new System.Drawing.Size(44, 15);
+            this.labelVer.TabIndex = 8;
+            this.labelVer.Text = "default";
+            // 
+            // versionTableLayout
+            // 
+            this.versionTableLayout.ColumnCount = 2;
+            this.versionTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.versionTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.versionTableLayout.Controls.Add(this.labelVer, 0, 0);
+            this.versionTableLayout.Controls.Add(this.linkLabel1, 1, 0);
+            this.versionTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.versionTableLayout.Location = new System.Drawing.Point(3, 500);
+            this.versionTableLayout.Name = "versionTableLayout";
+            this.versionTableLayout.RowCount = 1;
+            this.versionTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.versionTableLayout.Size = new System.Drawing.Size(262, 52);
+            this.versionTableLayout.TabIndex = 18;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Crimson;
+            this.label1.Location = new System.Drawing.Point(3, 56);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(252, 44);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "自动注入黑屏请先尝试增加延迟！！";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolTip1.SetToolTip(this.label1, "别问了别问了");
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(300, 540);
+            this.ClientSize = new System.Drawing.Size(284, 597);
             this.Controls.Add(this.mainTableLayout);
             this.Controls.Add(this.statusStrip1);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -379,24 +435,24 @@ namespace Dalamud.Updater
             this.MinimumSize = new System.Drawing.Size(300, 540);
             this.Name = "FormMain";
             this.Padding = new System.Windows.Forms.Padding(8);
-            this.Text = "卫月更新器";
+            this.Text = "土月更新器";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.Disposed += new System.EventHandler(this.FormMain_Disposed);
             this.contextMenuStrip1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.delayBox)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.checkboxTableLayout.ResumeLayout(false);
             this.checkboxTableLayout.PerformLayout();
-            this.delayFlowLayout.ResumeLayout(false);
-            this.delayFlowLayout.PerformLayout();
-            this.versionTableLayout.ResumeLayout(false);
-            this.versionTableLayout.PerformLayout();
             this.mainTableLayout.ResumeLayout(false);
             this.mainTableLayout.PerformLayout();
+            this.delayFlowLayout.ResumeLayout(false);
+            this.delayFlowLayout.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.delayBox)).EndInit();
             this.delayTableLayout.ResumeLayout(false);
             this.delayTableLayout.PerformLayout();
+            this.versionTableLayout.ResumeLayout(false);
+            this.versionTableLayout.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -404,30 +460,33 @@ namespace Dalamud.Updater
 
         #endregion
         private System.Windows.Forms.Button buttonInject;
-        private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.CheckBox checkBoxAutoInject;
         private System.Windows.Forms.NotifyIcon DalamudUpdaterIcon;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 显示ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 退出ToolStripMenuItem;
         private System.Windows.Forms.CheckBox checkBoxAutoStart;
-        private System.Windows.Forms.Label labelVer;
-        private System.Windows.Forms.Label delayLabel;
-        private System.Windows.Forms.Label second;
-        private System.Windows.Forms.NumericUpDown delayBox;
         private System.Windows.Forms.StatusStrip statusStrip1;
         public System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         public System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.CheckBox checkBoxSafeMode;
         private System.Windows.Forms.TableLayoutPanel checkboxTableLayout;
-        private System.Windows.Forms.FlowLayoutPanel delayFlowLayout;
-        private System.Windows.Forms.TableLayoutPanel versionTableLayout;
         private System.Windows.Forms.TableLayoutPanel mainTableLayout;
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Button buttonCheckForUpdate;
         private System.Windows.Forms.ComboBox comboBoxFFXIV;
-        private System.Windows.Forms.TableLayoutPanel delayTableLayout;
+        private System.Windows.Forms.CheckBox checkBoxShowDebug;
+        private System.Windows.Forms.CheckBox checkBoxUseProxy;
+        private System.Windows.Forms.TextBox textBoxDebugLog;
+        private TableLayoutPanel delayTableLayout;
+        private FlowLayoutPanel delayFlowLayout;
+        private Label delayLabel;
+        private NumericUpDown delayBox;
+        private Label second;
+        private TableLayoutPanel versionTableLayout;
+        private Label labelVer;
+        private LinkLabel linkLabel1;
+        private Label label1;
     }
 }

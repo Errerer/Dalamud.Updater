@@ -27,6 +27,14 @@ namespace Dalamud.Updater
             size = size ?? 0;
             progress = progress ?? 0;
             OnProgressBar?.Invoke((int)progress.Value);
+
+            // 显示详细的下载进度信息
+            if (size > 0)
+            {
+                var sizeMB = size.Value / 1024.0 / 1024.0;
+                var downloadedMB = downloaded / 1024.0 / 1024.0;
+                OnStatusLabel?.Invoke($"下载中: {downloadedMB:F2} MB / {sizeMB:F2} MB ({progress:F1}%)");
+            }
         }
 
         public void SetInvisible()
@@ -38,25 +46,24 @@ namespace Dalamud.Updater
         {
             switch (progress)
             {
-                // 文本太长会一个字都不显示
                 case IDalamudLoadingOverlay.DalamudUpdateStep.Dalamud:
-                    OnStatusLabel?.Invoke("正在更新核心");
+                    OnStatusLabel?.Invoke($"正在更新核心 (Dalamud {DalamudUpdater.Version})");
                     break;
 
                 case IDalamudLoadingOverlay.DalamudUpdateStep.Assets:
-                    OnStatusLabel?.Invoke("正在更新资源");
+                    OnStatusLabel?.Invoke("正在更新资源文件");
                     break;
 
                 case IDalamudLoadingOverlay.DalamudUpdateStep.Runtime:
-                    OnStatusLabel?.Invoke("正在更新运行库");
+                    OnStatusLabel?.Invoke($"正在更新运行库 (.NET {DalamudUpdater.RuntimeVersion})");
                     break;
 
                 case IDalamudLoadingOverlay.DalamudUpdateStep.Unavailable:
                     OnStatusLabel?.Invoke("暂时无法使用");
                     break;
-                    
+
                 case IDalamudLoadingOverlay.DalamudUpdateStep.Starting:
-                    OnStatusLabel?.Invoke("正在启动");
+                    OnStatusLabel?.Invoke("准备就绪，正在启动...");
                     break;
 
                 default:
