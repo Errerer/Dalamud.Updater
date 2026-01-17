@@ -92,7 +92,7 @@ namespace Dalamud.Updater
                     isCheckingUpdate = false;
                     if (dalamudUpdater.State == DalamudUpdater.DownloadState.Done)
                     {
-                        SetDalamudVersion();
+                        SetDalamudVersion(onlineVersion: DalamudUpdater.Version);
                         // 显示详细的更新信息
                         var version = DalamudUpdater.Version;
                         var runtimeVer = DalamudUpdater.RuntimeVersion;
@@ -120,17 +120,55 @@ namespace Dalamud.Updater
             {
                 return DalamudUpdater.Version;
             }
-            
+
             // 否则从本地目录查找
-            var rgx = new Regex(@"^\d+\.\d+\.\d+\.\d+$");
+            return getLocalVersion();
+        }
+
+        /// <summary>
+        /// 只从本地目录读取 Dalamud 版本，不检查在线版本
+        /// </summary>
+        private string getLocalVersion()
+        {
+            // 匹配两种版本格式：
+            // 1. 日期格式: 25-12-25-02 (yy-MM-dd-nn)
+            // 2. 语义化版本格式: 7.0.0.0
+            var dateRgx = new Regex(@"^\d{2}-\d{2}-\d{2}-\d{2}$");
+            var semverRgx = new Regex(@"^\d+\.\d+\.\d+\.\d+$");
             var stgRgx = new Regex(@"^\d+\.\d+\.\d+\.\d+-\d*-[\da-zA-Z]{9}$");
-            var di = new DirectoryInfo(Path.Combine(addonDirectory.FullName, "Hooks"));
-            var version = new Version("0.0.0.0");
+            var hooksPath = Path.Combine(addonDirectory.FullName, "Hooks");
+            Log.Information("[VERSION] 检查本地版本目录: {Path}", hooksPath);
+
+            var di = new DirectoryInfo(hooksPath);
             if (!di.Exists)
-                return version.ToString();
-            var dirs = di.GetDirectories("*", SearchOption.TopDirectoryOnly).Where(dir => rgx.IsMatch(dir.Name)).ToArray();
+            {
+                Log.Information("[VERSION] Hooks 目录不存在");
+                return "0.0.0.0";
+            }
+
+            // 先查找日期格式的版本目录 (优先)，同时检查目录内是否有 Dalamud 文件
+            var dateDirs = di.GetDirectories("*", SearchOption.TopDirectoryOnly)
+                .Where(dir => dateRgx.IsMatch(dir.Name) && HasDalamudFiles(dir.FullName))
+                .OrderByDescending(dir => dir.Name)  // 按名称降序排列，最新日期在前
+                .ToArray();
+            Log.Information("[VERSION] 找到 {Count} 个有效的日期格式版本目录: {Dirs}", dateDirs.Length, string.Join(", ", dateDirs.Select(d => d.Name)));
+
+            if (dateDirs.Length > 0)
+            {
+                var latestDateVersion = dateDirs[0].Name;
+                Log.Information("[VERSION] 本地版本 (日期格式): {Version}", latestDateVersion);
+                return latestDateVersion;
+            }
+
+            // 再查找语义化版本格式，同时检查目录内是否有 Dalamud 文件
+            var semverDirs = di.GetDirectories("*", SearchOption.TopDirectoryOnly)
+                .Where(dir => semverRgx.IsMatch(dir.Name) && HasDalamudFiles(dir.FullName))
+                .ToArray();
+            Log.Information("[VERSION] 找到 {Count} 个有效的语义化版本目录: {Dirs}", semverDirs.Length, string.Join(", ", semverDirs.Select(d => d.Name)));
+
+            var version = new Version("0.0.0.0");
             bool releaseVersionExists = false;
-            foreach (var dir in dirs)
+            foreach (var dir in semverDirs)
             {
                 var newVersion = new Version(dir.Name);
                 if (newVersion > version)
@@ -139,15 +177,55 @@ namespace Dalamud.Updater
                     version = newVersion;
                 }
             }
+
             if (!releaseVersionExists)
             {
-                var stgDirs = di.GetDirectories("*", SearchOption.TopDirectoryOnly).Where(dir => stgRgx.IsMatch(dir.Name)).ToArray();
+                var stgDirs = di.GetDirectories("*", SearchOption.TopDirectoryOnly)
+                    .Where(dir => stgRgx.IsMatch(dir.Name))
+                    .ToArray();
                 if (stgDirs.Length > 0)
                 {
+                    Log.Information("[VERSION] 使用 staging 版本: {Version}", stgDirs[0].Name);
                     return stgDirs[0].Name;
                 }
             }
+
+            Log.Information("[VERSION] 本地版本: {Version}", version.ToString());
             return version.ToString();
+        }
+
+        /// <summary>
+        /// 快速检查目录内是否有 Dalamud 核心文件（用于版本目录筛选）
+        /// </summary>
+        private bool HasDalamudFiles(string versionPath)
+        {
+            return File.Exists(Path.Combine(versionPath, "Dalamud.Injector.exe"))
+                && File.Exists(Path.Combine(versionPath, "Dalamud.dll"));
+        }
+
+        /// <summary>
+        /// 检查本地 Dalamud 核心文件是否存在
+        /// </summary>
+        private bool CheckLocalDalamudFiles(string version)
+        {
+            if (version == "0.0.0.0") return false;
+            var versionPath = Path.Combine(addonDirectory.FullName, "Hooks", version);
+            Log.Information("[VERSION] 检查核心文件目录: {Path}", versionPath);
+
+            if (!Directory.Exists(versionPath))
+            {
+                Log.Information("[VERSION] 版本目录不存在");
+                return false;
+            }
+
+            var injectorPath = Path.Combine(versionPath, "Dalamud.Injector.exe");
+            var dalamudPath = Path.Combine(versionPath, "Dalamud.dll");
+            var injectorExists = File.Exists(injectorPath);
+            var dalamudExists = File.Exists(dalamudPath);
+
+            Log.Information("[VERSION] Dalamud.Injector.exe: {Exists}, Dalamud.dll: {Exists2}", injectorExists, dalamudExists);
+
+            return injectorExists && dalamudExists;
         }
 
 
@@ -192,14 +270,44 @@ namespace Dalamud.Updater
             UpdateFormConfig();
             UpdateSelf();
 
-            SetDalamudVersion();
+            SetDalamudVersion(isLocal: true);
 
             // CheckUpdate(); // 启动时不自动检查更新
         }
 
-        public void SetDalamudVersion()
+        /// <summary>
+        /// 设置并显示 Dalamud 版本信息
+        /// </summary>
+        /// <param name="isLocal">是否为启动时显示本地版本</param>
+        /// <param name="onlineVersion">在线版本号（检查更新后传入）</param>
+        public void SetDalamudVersion(bool isLocal = false, string onlineVersion = null)
         {
-            var verStr = string.Format("卫月版本 : {0}", getVersion());
+            var localVer = getLocalVersion();
+            string verStr;
+
+            if (!string.IsNullOrEmpty(onlineVersion))
+            {
+                // 检查更新后，显示比较结果
+                if (localVer == onlineVersion)
+                    verStr = $"卫月版本 : {onlineVersion} (已是最新)";
+                else
+                    verStr = $"卫月版本 : {onlineVersion}";
+            }
+            else if (isLocal)
+            {
+                // 启动时显示本地版本
+                if (CheckLocalDalamudFiles(localVer))
+                    verStr = $"卫月版本 : {localVer} (本地)";
+                else if (localVer == "0.0.0.0")
+                    verStr = "卫月版本 : 未安装";
+                else
+                    verStr = $"卫月版本 : {localVer} (需更新)";
+            }
+            else
+            {
+                verStr = $"卫月版本 : {getVersion()}";
+            }
+
             if (this.labelVersion.InvokeRequired)
             {
                 Action<string> actionDelegate = (x) => { labelVersion.Text = x; };
